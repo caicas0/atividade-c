@@ -1,52 +1,65 @@
-# Prerequisites
-*.d
+#include <stdio.h>
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+#define NUM_CEDULAS 7
 
-# Linker output
-*.ilk
-*.map
-*.exp
+int main() {
+    int valores[NUM_CEDULAS] = {100, 50, 20, 10, 5, 2, 1};
+    int cedulas[NUM_CEDULAS];
+    
+    printf("Quantidade inicial de cédulas (100, 50, 20, 10, 5, 2, 1): ");
+    for (int i = 0; i < NUM_CEDULAS; i++) {
+        scanf("%d", &cedulas[i]);
+    }
 
-# Precompiled Headers
-*.gch
-*.pch
+    while (1) {
+        int operacao;
+        printf("Operação (0=saque, 1=depósito, -1=encerrar): ");
+        scanf("%d", &operacao);
+        
+        if (operacao == -1) {
+            break;
+        } else if (operacao == 0) {
+            int valor_saque;
+            printf("Valor do saque: ");
+            scanf("%d", &valor_saque);
+            int total_saque = 0;
+            int saque[NUM_CEDULAS] = {0};
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+            for (int i = 0; i < NUM_CEDULAS; i++) {
+                while (valor_saque >= valores[i] && cedulas[i] > 0) {
+                    valor_saque -= valores[i];
+                    cedulas[i]--;
+                    saque[i]++;
+                }
+            }
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+            if (valor_saque > 0) {
+                for (int i = 0; i < NUM_CEDULAS; i++) {
+                    cedulas[i] += saque[i];
+                }
+                printf("Saque não realizado por falta de cédulas\n");
+            } else {
+                printf("Saque realizado:\n");
+                for (int i = 0; i < NUM_CEDULAS; i++) {
+                    total_saque += saque[i] * valores[i];
+                }
+                printf("Total: R$ %d\n", total_saque);
+            }
+        } else if (operacao == 1) {
+            int deposito[NUM_CEDULAS];
+            printf("Quantidade de cédulas a depositar (100, 50, 20, 10, 5, 2, 1): ");
+            for (int i = 0; i < NUM_CEDULAS; i++) {
+                scanf("%d", &deposito[i]);
+                cedulas[i] += deposito[i];
+            }
+            printf("Depósito realizado.\n");
+        }
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+        printf("Quantidade atual de cédulas:\n");
+        for (int i = 0; i < NUM_CEDULAS; i++) {
+            printf("R$ %d: %d\n", valores[i], cedulas[i]);
+        }
+    }
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+    return 0;
+}
